@@ -3,12 +3,17 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	//"strconv"	
+	"strings"
 )
 
 // ## Declare variables here ## \\
 
 var doingOperation bool = false
+var exiting bool = false
 // make the contact directory
 var directory map[string]any = make(map[string]any)
 
@@ -62,12 +67,57 @@ func listContacts() {
 	return
 }
 
+func readInput() string{
+	reader := bufio.NewReader(os.Stdin)
+
+	in, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+
+	in = strings.TrimSuffix(in, "\n")
+	in = strings.TrimSuffix(in, "\r")
+
+	return in
+}
+
+func promptInput(){
+	if doingOperation == true {
+		return
+	}
+
+	fmt.Println("Type in what you want to do: [1:Create][2:Edit][3:List][4:Exit]")
+	var readIn string = readInput()
+	//fmt.Println(readIn)
+	switch(readIn){
+	case "1":
+		fmt.Println("Type in the name:")
+		var name string = readInput()
+		fmt.Println("Type in the number:")
+		var number string = readInput()
+
+		createContact(name, number)
+	case "2":
+		fmt.Println("Type in the name:")
+		var name string = readInput()
+		fmt.Println("Type in the new number:")
+		var number string = readInput()
+
+		editContact(name, number)
+	case "3":
+		listContacts()
+	case "4":
+		fmt.Println("Exiting process now")
+		exiting = true
+	default:
+		fmt.Println("Invalid operation")
+	}	
+}
+
 func main() {
-	createContact("Mark", "0217589187")
-	createContact("Ethan", "054919495817")
-	createContact("Alexandra", "01759174578")
-
-	editContact("Ethan", "079174876")
-
-	listContacts()
+	for exiting == false {
+		promptInput()
+	}
 }
